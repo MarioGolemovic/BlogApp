@@ -44,6 +44,8 @@ class CommentService {
       if (!comment) {
         return "Something went wrong,check the id";
       }
+
+      return { success: true };
     } catch (error) {
       console.log(error);
       throw error;

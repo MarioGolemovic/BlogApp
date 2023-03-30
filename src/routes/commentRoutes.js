@@ -8,7 +8,7 @@ const auth = require("../middlewares/auth");
 const comment = require("../middlewares/comment");
 const commentRouter = express.Router();
 
-commentRouter.get("/", auth, comment, getCommentsByNote);
+commentRouter.get("/",getCommentsByNote);
 
 commentRouter.post("/", auth, comment, postComment);
 

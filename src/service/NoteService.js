@@ -54,10 +54,10 @@ class NoteService {
       }
       if (description.length < 20 || description.length > 255) {
         return "Please write a description not longer than 255 characters";
-      }
-
+      } 
+      
       const note = await noteModel.findByIdAndUpdate(
-        { id: id },
+        { _id: id },
         {
           title: title,
           description: description,

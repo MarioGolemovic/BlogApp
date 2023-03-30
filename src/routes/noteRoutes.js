@@ -10,9 +10,9 @@ const auth = require("../middlewares/auth");
 const checkRole = require("../middlewares/checkRole");
 const noteRouter = express.Router();
 
-noteRouter.get("/", auth, getNote);
+noteRouter.get("/", getNote);
 
-noteRouter.get("/notes", auth, getNotes);
+noteRouter.get("/notes", getNotes);
 
 noteRouter.post("/", auth, checkRole, createNote);
 
