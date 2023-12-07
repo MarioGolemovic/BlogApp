@@ -38,14 +38,29 @@ class CommentService {
     }
   }
 
-  static async deleteComment(id) {
+  static async deleteComment(id, userId, requestingUserEmail) {
     try {
-      const comment = await commentModel.findByIdAndDelete(id);
+      const comment = await commentModel.findById(id);
+  
       if (!comment) {
-        return "Something went wrong,check the id";
+        return "Comment not found";
       }
-
-      return { success: true };
+  
+      // Provjera je li korisnik ima ovlasti za brisanje komentara
+      if (
+        comment.userId.toString() === userId ||
+        requestingUserEmail === 'mariogolemovic12@gmail.com'
+      ) {
+        const deletedComment = await commentModel.findByIdAndDelete(id);
+  
+        if (!deletedComment) {
+          return "Something went wrong, check the id";
+        }
+  
+        return { success: true };
+      } else {
+        return "Unauthorized to delete this comment";
+      }
     } catch (error) {
       console.log(error);
       throw error;
@@ -70,11 +85,12 @@ class CommentService {
         comments: [],
       };
 
-      const userComments = await commentModel.find({ noteID });
+      const userComments = await commentModel.find({ noteID }).populate('userId', 'username');
       userComments.forEach((userComment) => {
         returnValue.comments.push({
           userId: userComment.userId,
           id: userComment.id,
+          username: userComment.userId.username,
           comment: userComment.comment,
           createdAt: userComment.createdAt,
           updatedAt: userComment.updatedAt,

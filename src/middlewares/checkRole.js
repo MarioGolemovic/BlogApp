@@ -3,7 +3,7 @@ const SECRET_KEY = "NOTESAPI";
 module.exports = (req, res, next) => {
   try {
     let payload = jwt.decode(req.headers.authorization.split(" ")[1]);
-    if (payload.role != "admin") {
+    if (payload.email != "mariogolemovic12@gmail.com") {
       return res.status(401).json({ message: "Ne moze!" });
     }
 

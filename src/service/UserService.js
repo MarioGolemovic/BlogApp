@@ -5,16 +5,15 @@ const SECRET_KEY = "NOTESAPI";
 const validator = require("validator");
 
 class UserService {
-  static async signup({ username, email, password, role }) {
+  static async signup({ username, email, password}) {
     try {
-      if (!username || !email || !password || !role) {
+      if (!username || !email || !password) {
         return "Required fields are missing";
       }
       if (
         typeof username != "string" ||
         typeof email != "string" ||
-        typeof password != "string" ||
-        typeof role != "string"
+        typeof password != "string" 
       ) {
         return "Required fields are not string";
       }
@@ -27,17 +26,15 @@ class UserService {
       if (password.length < 8 || password.length > 50) {
         return "Please write a password not longer than 50 characters and not less than 8 characters!";
       }
-      if (role != "admin" && role != "user") {
-        return "Invalid role provided";
-      }
+     
       const existingEmail = await userModel.findOne({ email: email });
       const existingUserName = await userModel.findOne({ username: username });
 
       if (existingEmail) {
-        throw "EMAIL_ALREDY_EXISTS";
+        throw "EMAIL ALREDY EXISTS";
       }
       if (existingUserName) {
-        throw "USER_ALREDY_EXISTS";
+        throw "USERNAME ALREDY EXISTS";
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -45,10 +42,10 @@ class UserService {
         email: email,
         password: hashedPassword,
         username: username,
-        role: role,
+    
       });
       const token = jwt.sign(
-        { role: result.role, email: result.email, id: result.id },
+        { email: result.email, id: result.id },
         SECRET_KEY,
         { expiresIn: "3h" }
       );
@@ -56,7 +53,6 @@ class UserService {
       return {
         username: result.username,
         email: result.email,
-        role: result.role,
         token,
       };
     } catch (error) {
@@ -77,7 +73,7 @@ class UserService {
       const existingUser = await userModel.findOne({ email: email });
 
       if (!existingUser) {
-        throw "USER_NOT_FOUND";
+        throw "USER NOT FOUND";
       }
 
       const matchPassword = await bcrypt.compare(
@@ -86,7 +82,7 @@ class UserService {
       );
 
       if (!matchPassword) {
-        throw "INVALID_CREDENTIALS";
+        throw "INVALID PASSWORD";
       }
 
       const token = jwt.sign(

@@ -5,13 +5,12 @@ const {
   getCommentsByNote,
 } = require("../controllers/CommentController");
 const auth = require("../middlewares/auth");
-const comment = require("../middlewares/comment");
 const commentRouter = express.Router();
 
 commentRouter.get("/",getCommentsByNote);
 
-commentRouter.post("/", auth, comment, postComment);
+commentRouter.post("/", auth, postComment);
 
-commentRouter.delete("/", auth, comment, deleteComment);
+commentRouter.delete("/", auth, deleteComment);
 
 module.exports = commentRouter;

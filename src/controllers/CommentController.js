@@ -14,7 +14,9 @@ class CommentController {
 
   static async deleteComment(request, response) {
     const payload = request.query.id;
-    CommentService.deleteComment(payload)
+    const userId = request.userId;
+    const requestingUserEmail = request.email;
+    CommentService.deleteComment(payload,userId, requestingUserEmail)
       .then((result) => {
         return response.status(200).send(result);
       })
