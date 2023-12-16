@@ -4,6 +4,7 @@ const cors = require('cors');
 const noteRouter = require("./routes/noteRoutes");
 const userRouter = require("./routes/userRoutes");
 const commentRouter = require("./routes/commentRoutes");
+const playerRouter = require("./routes/playerRoutes");
 
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
@@ -19,6 +20,7 @@ app.use((req, res, next) => {
 app.use("/users", userRouter); 
 app.use("/note", noteRouter); 
 app.use("/comment", commentRouter);
+app.use("/player", playerRouter);
 
 mongoose
   .connect("mongodb://root:mongodb@localhost:27017")
