@@ -4,18 +4,34 @@ const jwt = require("jsonwebtoken");
 const SECRET_KEY = "NOTESAPI";
 
 class PlayerService {
-  static async createPlayer({ name,position,injury, age, number, yellow, red, goals, assists, userId }) {
+  static async createPlayer({ name,nationality,position,injury, age, number, yellow, red, goals, assists, userId }) {
     try {
-      if (!name || !position || !injury || !age || !number || !yellow || !red || !goals || !assists) {
+      if (!name || !nationality || !position || !injury || !age || !number || !yellow || !red || !goals || !assists) {
         return "Required fields are missing";
       }
-      if (typeof name != "string" || typeof position != "string" || typeof injury != "string" || typeof age != "string" || typeof number != "string" || typeof yellow != "string" || typeof red != "string" || typeof goals != "string" || typeof assists != "string") {
+      if (typeof name != "string" || typeof nationality != "string" || typeof position != "string" || typeof injury != "string" || typeof age != "string" || typeof number != "string" || typeof yellow != "string" || typeof red != "string" || typeof goals != "string" || typeof assists != "string") {
         return "Required fields are not in the expected format";
       }
+
+    const validPositions = ["ATT", "MID", "DEF", "GK"];
+    if (!validPositions.includes(position)) {
+      return "Invalid position. Please enter 'ATT', 'MID', 'DEF', or 'GK'.";
+    }
+
+    if (age.length !== 2) {
+      return "please enter the correct age";
+    }
+
+    const maxDigits = 2;
+    if (number.length > maxDigits || yellow.length > maxDigits || red.length > maxDigits || goals.length > maxDigits || assists.length > maxDigits) {
+      return "please enter the correct information";
+    }
+      
      
 
       const userPlayer = await playerModel.create({
         name,
+        nationality,
         position,
         injury,
         age,
@@ -29,6 +45,7 @@ class PlayerService {
 
       return {
         name: userPlayer.name,
+        nationality: userPlayer.nationality,
         position: userPlayer.position,
         injury: userPlayer.injury,
         age: userPlayer.age,
@@ -46,13 +63,26 @@ class PlayerService {
     }
   }
 
-  static async updatePlayer({ name,position,injury, age, number, yellow, red, goals, assists, id }) {
+  static async updatePlayer({ name,nationality,position,injury, age, number, yellow, red, goals, assists, id }) {
     try {
       if (!name || !position || !injury || !age || !number || !yellow || !red || !goals || !assists || !id) {
         return "Required fields are missing";
       }
-      if (typeof name != "string" || typeof position != "string" || typeof injury != "string" ||  typeof age != "string" || typeof number != "string" || typeof yellow != "string" || typeof red != "string" || typeof goals != "string" || typeof assists != "string" || typeof id != "string") {
+      if (typeof name != "string" || typeof nationality != "string" || typeof position != "string" || typeof injury != "string" ||  typeof age != "string" || typeof number != "string" || typeof yellow != "string" || typeof red != "string" || typeof goals != "string" || typeof assists != "string" || typeof id != "string") {
         return "Required fields are not in the expected format";
+      }
+      const validPositions = ["ATT", "MID", "DEF", "GK"];
+      if (!validPositions.includes(position)) {
+        return "Invalid position. Please enter 'ATT', 'MID', 'DEF', or 'GK'.";
+      }
+  
+      if (age.length !== 2) {
+        return "please enter the correct age";
+      }
+  
+      const maxDigits = 2;
+      if (number.length > maxDigits || yellow.length > maxDigits || red.length > maxDigits || goals.length > maxDigits || assists.length > maxDigits) {
+        return "please enter the correct information";
       }
      
       
@@ -61,6 +91,7 @@ class PlayerService {
         { _id: id },
         {
           name: name,
+          nationality:nationality,
           position: position,
           injury: injury,
           age: age,
@@ -79,6 +110,7 @@ class PlayerService {
       return {
         id: player.id,
         name: player.name,
+        nationality: player.nationality,
         position: player.position,
         injury: player.injury,
         age: player.age,
@@ -111,16 +143,24 @@ class PlayerService {
 
   static async getPlayers() {
     try {
-      const players = await playerModel.find().sort({createdAt : 'desc'});
+      const players = await playerModel.find().sort({ position: 1, createdAt: 'desc' });
+  
       if (!players) {
         return "Something went wrong";
       }
-
-      return players.map((player) => {
+  
+      const sortedPlayers = players.sort((a, b) => {
+        const positionOrder = { GK: 0, DEF: 1, MID: 2, ATT: 3 };
+  
+        return positionOrder[a.position] - positionOrder[b.position];
+      });
+  
+      return sortedPlayers.map((player) => {
 
         return {
           id: player.id,
           name: player.name,
+          nationality:player.nationality,
           position: player.position,
           injury: player.injury,
           age: player.age,
@@ -150,6 +190,7 @@ class PlayerService {
       return {
         id: player.id,
         name: player.name,
+        nationality: player.nationality,
         position: player.position,
         injury: player.injury,
         age: player.age,

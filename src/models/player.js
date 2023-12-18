@@ -5,6 +5,10 @@ const PlayerSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    nationality: {
+      type: String,
+      required: true,
+  },
     position: {
         type: String,
         required: true,
