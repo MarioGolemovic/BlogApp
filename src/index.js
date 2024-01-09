@@ -6,11 +6,14 @@ const userRouter = require("./routes/userRoutes");
 const commentRouter = require("./routes/commentRoutes");
 const playerRouter = require("./routes/playerRoutes");
 
+
+
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 
 app.use(express.json());
 app.use(cors());
+
 
 app.use((req, res, next) => {                  
   console.log("HTTP method -" + req.method + ", URL -" + req.url); 
@@ -21,6 +24,10 @@ app.use("/users", userRouter);
 app.use("/note", noteRouter); 
 app.use("/comment", commentRouter);
 app.use("/player", playerRouter);
+
+
+
+
 
 mongoose
   .connect("mongodb://root:mongodb@localhost:27017")
