@@ -2,8 +2,10 @@ const express = require("express");
 const app = express();
 const cors = require('cors');
 const noteRouter = require("./routes/noteRoutes");
+const postRouter = require("./routes/postRoutes");
 const userRouter = require("./routes/userRoutes");
 const commentRouter = require("./routes/commentRoutes");
+const commenteRouter = require("./routes/commenteRoutes");
 const playerRouter = require("./routes/playerRoutes");
 
 
@@ -22,7 +24,9 @@ app.use((req, res, next) => {
 
 app.use("/users", userRouter); 
 app.use("/note", noteRouter); 
+app.use("/post", postRouter);
 app.use("/comment", commentRouter);
+app.use("/commente", commenteRouter);
 app.use("/player", playerRouter);
 
 
