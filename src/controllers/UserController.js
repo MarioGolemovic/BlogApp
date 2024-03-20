@@ -22,5 +22,15 @@ class UserController {
         response.send(error);
       });
   }
+  static async resetPassword(request, response) {
+    const payload = request.body;
+    UserService.resetPassword(payload)
+      .then((result) => {
+        response.status(200).send(result);
+      })
+      .catch((error) => {
+        response.status(500).send(error);
+      });
+  }
 }
 module.exports = UserController;

@@ -106,6 +106,32 @@ class UserService {
       throw error;
     }
   }
+  static async resetPassword({ email, newPassword }) {
+    try {
+      if (!email || !newPassword) {
+        return "Email and new password are required";
+      }
+
+      const existingUser = await userModel.findOne({ email });
+
+      if (!existingUser) {
+        return "User with this email does not exist";
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+
+      await userModel.findByIdAndUpdate(existingUser._id, {
+        password: hashedPassword,
+      });
+
+      return "Password reset successfully";
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+  
 }
 
 module.exports = UserService;
